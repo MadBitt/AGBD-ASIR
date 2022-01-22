@@ -228,6 +228,27 @@ WHERE address_id IN (SELECT address_id FROM address WHERE city_id IN
 
 -- 38. Identifica todas las películas categorizadas como familiares (categoría "family").
 
-SELECT * from film;
+SELECT * FROM film
+WHERE film_id IN (SELECT film_id FROM film_category WHERE category_id IN 
+(SELECT category_id FROM category WHERE name = "Family"))
+;
+
 -- 39. Muestra las películas más arrendadas en orden descendente.
+
+SELECT title, COUNT(r.inventory_id) AS "Nº veces arrendada" FROM film f
+INNER JOIN inventory i
+ON f.film_id = i.film_id
+INNER JOIN rental r
+ON i.inventory_id = r.inventory_id
+GROUP BY f.title
+ORDER BY COUNT(i.film_id) DESC
+;
+
 -- 40. Despliega el dinero recaudado por cada tienda.
+
+SELECT t.store_id AS "Tienda", SUM(p.amount) AS "Dinero recaudado" FROM store t
+INNER JOIN staff s 
+ON t.store_id = s.store_id
+INNER JOIN payment p
+ON s.staff_id = p.staff_id
+GROUP BY Tienda;
